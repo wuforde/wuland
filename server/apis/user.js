@@ -3,7 +3,6 @@ const dbConfig = require('../../../config/db_config.json');
 const config = require('../../config/config.json')
 const mysql = require('mysql2');
 
-
 module.exports.Get = function(id,response) {
     let dbConnection = mysql.createConnection({host: dbConfig.host, user: dbConfig.user, password: dbConfig.password, connectTimeout:100});
     dbConnection.config.namedPlaceholders = true;
@@ -16,7 +15,7 @@ module.exports.Get = function(id,response) {
             throw err;
         }
         else {
-            dbConnection.query(config.user.get, {userid:id},function (err,result) {
+            dbConnection.query(config.user.get, {id:id},function (err,result) {
                 if(err)
                 {
                     response.status(500).send("query failed \n");
@@ -112,10 +111,76 @@ module.exports.Add = function(userObj, response){
     });
 }
 
-module.exports.Update = function(){
-
+module.exports.Update = function(userObj, response){
+    let dbConnection = mysql.createConnection({host: dbConfig.host, user: dbConfig.user, password: dbConfig.password});
+    dbConnection.config.namedPlaceholders = true;
+    dbConnection.connect(function(err) {
+        if (err)
+        {
+            response.status(500).send("db connection error \n");
+            console.error(err.message);
+            dbConnection.end();
+            throw err;
+        }
+        else {
+            console.log(userObj);
+            dbConnection.query(config.user.update, {name : userObj.name, id : userObj.id },function (err,result) {
+                if(err)
+                {
+                    response.status(500).send("update failed\n");s
+                    console.error(err.message);
+                    throw err;
+                }
+                else
+                {
+                    console.log({userid:userObj.id});
+                    dbConnection.query(config.user.get, {id:userObj.id},function (err,result) {
+                        if(err)
+                        {
+                            response.status(500).send("query failed \n");
+                            console.error(err.message);
+                            throw err;
+                        }
+                        else
+                        {
+                            response.status(200).send(result);
+  
+                        }
+                    });
+                }
+                dbConnection.end();
+            });
+        }
+    });
 }
 
-module.exports.Delete = function(id, resposne) {
-
+module.exports.Delete = function(userId, response) {
+    let dbConnection = mysql.createConnection({host: dbConfig.host, user: dbConfig.user, password: dbConfig.password});
+    dbConnection.config.namedPlaceholders = true;
+    dbConnection.connect(function(err) {
+        if (err)
+        {
+            response.status(500).send("db connection error \n");
+            console.error(err.message);
+            dbConnection.end();
+            throw err;
+        }
+        else {
+            console.log(userId);
+            dbConnection.query(config.user.delete, {id: userId},function (err,result) {
+                if(err)
+                {
+                    console.error(err.message);
+                    response.status(500).send("delete failed\n");
+                    
+                    throw err;
+                }
+                else
+                {
+                    response.status(200).send({id: userId});
+                }
+                dbConnection.end();
+            });
+        }
+    });
 }

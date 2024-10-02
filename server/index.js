@@ -1,4 +1,5 @@
 const config = require('../config/config.json');
+const wulib = require('../lib/lib.js');
 const express = require('express');
 const querystring = require('querystring');
 const app = express();
@@ -11,9 +12,9 @@ response.send('login');
 });
 
 app.get('/*',(request,response) => {
-    var pathParts = request.path.split('/');
-    var apiName = pathParts[1];
-    let api = require('./apis/' + apiName+'.js');
+    let pathParts = request.path.split('/');
+    let apiName = pathParts[1];
+    let api = require('./apis/' + wulib.getApiName(request) + '.js');
 
     if(pathParts.length >= 2)
     {
@@ -35,19 +36,22 @@ app.get('/*',(request,response) => {
 });
 
 app.post("/*", (request,response) => {
-    var pathParts = request.path.split('/');
-    var apiName = pathParts[1];
-    let api = require('./apis/' + apiName+'.js');
-
+    let api = require('./apis/' + wulib.getApiName(request) + '.js');
     api.Add(request.body,response)
 })
 
 app.put('/*', (request,response) =>{
-response.send('put');
+    let api = require('./apis/' + wulib.getApiName(request) + '.js');
+    api.Update(request.body,response)
 });
 
 app.delete("/*",(request,response) => {
-    response.send('delete');
+    let api = require('./apis/' + wulib.getApiName(request) + '.js');
+    let pathParts = request.path.split('/');
+
+    api.Delete(pathParts[2],response)
 })
+
+
 
 app.listen(config.server.port,()=>console.log('server up and listening on' + config.server.port));

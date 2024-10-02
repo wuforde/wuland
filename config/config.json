@@ -5,10 +5,11 @@
     },
     "user" :
     {
-        "get" : "select * from wudb.users where id = :userid",
+        "get" : "select * from wudb.users where id = :id",
         "getAll" : "select * from wudb.users",
         "insert" : "insert into wudb.users (name) values (:name);",
         "insert_after" : "select * from wudb.users where id = LAST_INSERT_ID()",
-        "update" : "update wudb.users set name = :name"
+        "update" : "update wudb.users set name = :name where id = :id",
+        "delete" : "delete from wudb.users where id = :id"
     }
 }
