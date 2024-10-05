@@ -11,5 +11,9 @@
         "insert_after" : "select * from wudb.users where id = LAST_INSERT_ID()",
         "update" : "update wudb.users set name = :name where id = :id",
         "delete" : "delete from wudb.users where id = :id"
+    },
+    "security" : {
+        "login" : "select * from wudb.users where name = :name and password = :password",
+        "hasAccess" : "select wudb.rbac where userId = :userId and assetPath = :assetPath"
     }
 }

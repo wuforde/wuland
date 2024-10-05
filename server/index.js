@@ -2,11 +2,14 @@ const config = require('../config/config.json');
 const wulib = require('../lib/lib.js');
 const express = require('express');
 const querystring = require('querystring');
+const crypto = require('crypto');
 const app = express();
 
 app.use(express.json());
 
-app.get('/login',(request,response) => {
+app.post('/login',(request,response) => {
+
+    
 console.log('login');
 response.send('login');
 });
